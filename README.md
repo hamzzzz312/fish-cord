@@ -1,0 +1,2 @@
+# fish-cord
+discord thingy
