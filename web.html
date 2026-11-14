@@ -1,0 +1,3518 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="deep-ocean">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="aurora">
+  <title>Fishcord — Klien Obrolan Web Bertema Samudra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+
+      /* Aurora / Deep Ocean (Default) */
+      --background: #0c1214;
+      --surface-container-low: #111a1e;
+      --surface-container: #152024;
+      --surface-container-high: #1c2a30;
+
+      --on-surface: #edf3f5;
+      --on-surface-variant: #94a8b0;
+
+      --outline: #38515c;
+      --outline-variant: #213138;
+
+      --primary: #63c7d6;
+      --on-primary: #081214;
+      --primary-container: #163840;
+      --on-primary-container: #c7f0f7;
+      --secondary: #5d7882;
+      --tertiary: #87d69b;
+      --error: #f27474;
+      --on-error: #1a0606;
+
+      --data-1: #63c7d6;
+      --data-2: #87d69b;
+      --data-3: #e8b954;
+      --data-4: #f08c70;
+      --data-context: #415861;
+
+      --font-headline: 'Instrument Sans', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-label: 'Geist Mono', monospace;
+
+      --rounded: 0.5rem;
+      --rounded-lg: 0.75rem;
+      --rounded-squircle: 1rem;
+      --rounded-full: 9999px;
+
+      --hairline: 1px solid var(--outline-variant);
+      --hairline-strong: 1px solid var(--outline);
+      --panel-gradient: linear-gradient(180deg, #162226 0%, #111a1e 100%);
+      --heading-tracking: -0.025em;
+      --label-tracking: 0.06em;
+      --sage-tint: color-mix(in srgb, var(--tertiary) 13%, transparent);
+      --cyan-tint: color-mix(in srgb, var(--primary) 13%, transparent);
+      --warning-tint: color-mix(in srgb, var(--warning) 14%, transparent);
+      --error-tint: color-mix(in srgb, var(--error) 14%, transparent);
+      --scrim: color-mix(in srgb, var(--background) 78%, transparent);
+
+      /* Shared tokens */
+      --positive: #87d69b;
+      --warning: #e8b954;
+      --focus: #63c7d6;
+
+      /* Type scale (Focused Tool) */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+
+      /* Layout dimensions */
+      --rail-width: 4.5rem;
+      --sidebar-width: 15.5rem;
+      --members-width: 15.5rem;
+      --topbar-height: 3.5rem;
+      --wallpaper-opacity: 0.26;
+      --wallpaper-blur: 0px;
+    }
+
+    [data-theme="abyssal"] {
+      --background: #06090d;
+      --surface-container-low: #0a1017;
+      --surface-container: #0f1722;
+      --surface-container-high: #162231;
+      --on-surface: #e6f1fa;
+      --on-surface-variant: #88a2ba;
+      --outline: #2d4661;
+      --outline-variant: #19293b;
+      --primary: #38bdf8;
+      --on-primary: #04101a;
+      --primary-container: #0f324a;
+      --on-primary-container: #bae6fd;
+      --secondary: #4e6982;
+      --tertiary: #5eead4;
+      --positive: #5eead4;
+      --focus: #38bdf8;
+      --panel-gradient: linear-gradient(180deg, #101925 0%, #0a1017 100%);
+    }
+
+    [data-theme="coral-reef"] {
+      --background: #0b1619;
+      --surface-container-low: #102024;
+      --surface-container: #152a2f;
+      --surface-container-high: #1c363c;
+      --on-surface: #f2f7f6;
+      --on-surface-variant: #9ab8b7;
+      --outline: #365c63;
+      --outline-variant: #1f3c42;
+      --primary: #f08c70;
+      --on-primary: #1c0b06;
+      --primary-container: #42221c;
+      --on-primary-container: #ffd8cc;
+      --secondary: #5a8286;
+      --tertiary: #63c7d6;
+      --positive: #87d69b;
+      --focus: #f08c70;
+      --panel-gradient: linear-gradient(180deg, #172e34 0%, #102024 100%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* App Shell */
+    .app-shell {
+      display: grid;
+      grid-template-columns: var(--rail-width) var(--sidebar-width) minmax(0, 1fr) var(--members-width);
+      height: 100dvh;
+      min-height: 520px;
+      width: 100%;
+      background-color: var(--background);
+      overflow: hidden;
+    }
+
+    .app-shell.members-collapsed {
+      grid-template-columns: var(--rail-width) var(--sidebar-width) minmax(0, 1fr) 0px;
+    }
+
+    .app-shell * { min-width: 0; }
+
+    /* Column 1: Server Rail */
+    .server-rail {
+      background-color: var(--background);
+      border-right: var(--hairline);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-sm) 0;
+      gap: var(--space-sm);
+      overflow-y: auto;
+      z-index: 20;
+    }
+
+    .rail-divider {
+      width: 2rem;
+      height: 1px;
+      background-color: var(--outline-variant);
+      margin: var(--space-xs) 0;
+    }
+
+    .server-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .server-pill {
+      position: absolute;
+      left: 0;
+      width: 4px;
+      height: 0;
+      border-radius: 0 var(--rounded) var(--rounded) 0;
+      background-color: var(--primary);
+      transition: height var(--dur-short) var(--ease-out), opacity var(--dur-short) var(--ease-out);
+      opacity: 0;
+    }
+
+    .server-item.active .server-pill {
+      height: 2.25rem;
+      opacity: 1;
+    }
+
+    .server-item:hover .server-pill {
+      height: 1.25rem;
+      opacity: 0.7;
+    }
+
+    .server-item.active:hover .server-pill {
+      height: 2.25rem;
+      opacity: 1;
+    }
+
+    .squircle-btn {
+      width: 3rem;
+      height: 3rem;
+      border-radius: var(--rounded-full);
+      border: var(--hairline);
+      background: var(--panel-gradient);
+      color: var(--on-surface);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-radius var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+      position: relative;
+    }
+
+    .squircle-btn:hover,
+    .server-item.active .squircle-btn {
+      border-radius: var(--rounded-squircle);
+      border-color: var(--primary);
+    }
+
+    .server-item.active .squircle-btn {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .squircle-btn.action-btn {
+      color: var(--tertiary);
+      border-style: dashed;
+    }
+
+    .squircle-btn.action-btn:hover {
+      background-color: var(--sage-tint);
+      border-style: solid;
+      border-color: var(--tertiary);
+    }
+
+    .squircle-btn:active {
+      transform: translateY(1px);
+    }
+
+    .rail-spacer { flex: 1; }
+
+    /* Column 2: Channel & Navigation Sidebar */
+    .channel-sidebar {
+      background-color: var(--surface-container-low);
+      border-right: var(--hairline);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      z-index: 15;
+    }
+
+    .server-header {
+      height: var(--topbar-height);
+      padding: 0 var(--space-md);
+      border-bottom: var(--hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      flex-shrink: 0;
+    }
+
+    .server-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow: hidden;
+    }
+
+    .server-name {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--subhead-size);
+      letter-spacing: var(--heading-tracking);
+      color: var(--on-surface);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0;
+    }
+
+    .server-sub {
+      font-family: var(--font-label);
+      font-size: 0.6875rem;
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+
+    .channel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-md) var(--space-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .category-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--space-sm);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+
+    .channel-add-btn {
+      background: transparent;
+      border: none;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      padding: var(--space-xs);
+      border-radius: var(--rounded);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      min-height: 28px;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .channel-add-btn:hover {
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
+    }
+
+    .channel-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-sm);
+      min-height: 40px;
+      border-radius: var(--rounded);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--on-surface-variant);
+      text-align: left;
+      cursor: pointer;
+      font-size: var(--body-size);
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .channel-btn:hover {
+      background-color: var(--surface-container);
+      color: var(--on-surface);
+    }
+
+    .channel-btn.active {
+      background-color: var(--surface-container-high);
+      border-color: var(--outline-variant);
+      color: var(--on-surface);
+      font-weight: 600;
+    }
+
+    .channel-btn.active .channel-icon {
+      color: var(--primary);
+    }
+
+    .channel-btn.voice-active {
+      background-color: var(--sage-tint);
+      border-color: color-mix(in srgb, var(--tertiary) 35%, transparent);
+      color: var(--tertiary);
+      font-weight: 600;
+    }
+
+    .channel-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .voice-occupant {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-left: var(--space-lg);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      background-color: var(--surface-container);
+      border: var(--hairline);
+      font-size: 0.8125rem;
+      color: var(--on-surface);
+    }
+
+    .wave-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+      margin-left: auto;
+    }
+
+    .wave-bar {
+      width: 3px;
+      background-color: var(--tertiary);
+      border-radius: 2px;
+      animation: wavePulse 1.1s ease-in-out infinite;
+    }
+
+    .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+
+    .wave-bars.muted .wave-bar {
+      animation: none;
+      height: 3px !important;
+      background-color: var(--secondary);
+    }
+
+    @keyframes wavePulse {
+      0%, 100% { height: 4px; }
+      50% { height: 12px; }
+    }
+
+    /* Voice Connection Dock */
+    .voice-dock {
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container);
+      border-top: var(--hairline);
+      display: none;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .voice-dock.visible {
+      display: flex;
+    }
+
+    .voice-dock-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    .voice-status-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .voice-status-title {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--tertiary);
+      font-weight: 600;
+    }
+
+    .voice-status-room {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .voice-dock-actions {
+      display: flex;
+      gap: var(--space-xs);
+    }
+
+    /* User Profile Strip */
+    .user-strip {
+      padding: var(--space-sm);
+      background-color: var(--background);
+      border-top: var(--hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-xs);
+      flex-shrink: 0;
+    }
+
+    .user-trigger {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-xs);
+      border-radius: var(--rounded);
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      flex: 1;
+      text-align: left;
+      min-height: 44px;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .user-trigger:hover {
+      background-color: var(--surface-container);
+    }
+
+    .avatar-badge {
+      width: 2.125rem;
+      height: 2.125rem;
+      border-radius: var(--rounded-full);
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
+    .status-dot {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 11px;
+      height: 11px;
+      border-radius: var(--rounded-full);
+      border: 2px solid var(--background);
+      background-color: var(--tertiary);
+    }
+
+    .status-dot.online { background-color: var(--tertiary); }
+    .status-dot.idle { background-color: var(--warning); }
+    .status-dot.dnd { background-color: var(--error); }
+    .status-dot.offline { background-color: var(--secondary); }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .user-name {
+      font-family: var(--font-headline);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--on-surface);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-sub {
+      font-family: var(--font-label);
+      font-size: 0.6875rem;
+      color: var(--on-surface-variant);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .strip-controls {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--rounded);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--on-surface-variant);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover {
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
+    }
+
+    .icon-btn.active {
+      background-color: var(--cyan-tint);
+      color: var(--primary);
+      border-color: color-mix(in srgb, var(--primary) 35%, transparent);
+    }
+
+    .icon-btn.danger-active {
+      background-color: var(--error-tint);
+      color: var(--error);
+      border-color: color-mix(in srgb, var(--error) 35%, transparent);
+    }
+
+    /* Column 3: Main Chat Area */
+    .chat-main {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background-color: var(--surface-container);
+      overflow: hidden;
+    }
+
+    .wallpaper-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: var(--wallpaper-opacity);
+      filter: blur(var(--wallpaper-blur));
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      transition: opacity var(--dur-short) var(--ease-out);
+    }
+
+    .wallpaper-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chat-header {
+      position: relative;
+      z-index: 5;
+      height: var(--topbar-height);
+      padding: 0 var(--space-md);
+      background-color: color-mix(in srgb, var(--surface-container-low) 92%, transparent);
+      border-bottom: var(--hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      flex-shrink: 0;
+    }
+
+    .chat-title-area {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      overflow: hidden;
+    }
+
+    .mobile-nav-btn {
+      display: none;
+    }
+
+    .channel-heading {
+      font-family: var(--font-headline);
+      font-size: var(--subhead-size);
+      font-weight: 600;
+      letter-spacing: var(--heading-tracking);
+      color: var(--on-surface);
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .topic-divider {
+      width: 1px;
+      height: 1.125rem;
+      background-color: var(--outline-variant);
+      flex-shrink: 0;
+    }
+
+    .channel-topic {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-shrink: 0;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      background-color: var(--background);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: 0 var(--space-sm);
+      height: 36px;
+      width: 12rem;
+    }
+
+    .search-box label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      color: var(--on-surface);
+      font-size: 0.8125rem;
+      width: 100%;
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: var(--on-surface-variant);
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      height: 36px;
+      padding: 0 var(--space-sm);
+      border-radius: var(--rounded);
+      border: var(--hairline-strong);
+      background-color: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .pill-btn:hover {
+      background-color: var(--surface-container-high);
+      border-color: var(--primary);
+    }
+
+    .pill-btn.primary {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+
+    .pill-btn.primary:hover {
+      filter: brightness(1.06);
+    }
+
+    /* Chat Feed */
+    .chat-feed {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .welcome-card {
+      background: var(--panel-gradient);
+      border: var(--hairline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      max-width: 44rem;
+    }
+
+    .welcome-eyebrow {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+
+    .welcome-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 600;
+      letter-spacing: var(--heading-tracking);
+      line-height: 1.15;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .welcome-desc {
+      margin: 0;
+      color: var(--on-surface-variant);
+      max-width: 62ch;
+    }
+
+    .cmd-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .cmd-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      min-height: 36px;
+      border-radius: var(--rounded);
+      border: var(--hairline-strong);
+      background-color: var(--background);
+      color: var(--primary);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .cmd-chip:hover {
+      background-color: var(--primary-container);
+      border-color: var(--primary);
+      color: var(--on-primary-container);
+    }
+
+    /* Message Item */
+    .message-row {
+      display: flex;
+      gap: var(--space-md);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded-lg);
+      background-color: color-mix(in srgb, var(--surface-container-low) 78%, transparent);
+      border: var(--hairline);
+      position: relative;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .message-row:hover {
+      background-color: color-mix(in srgb, var(--surface-container-high) 85%, transparent);
+    }
+
+    .message-row.bot-msg {
+      border-left: 3px solid var(--primary);
+    }
+
+    .message-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .message-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .msg-author {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .role-badge {
+      font-family: var(--font-label);
+      font-size: 0.6875rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: var(--rounded);
+      background-color: var(--cyan-tint);
+      color: var(--primary);
+      border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+    }
+
+    .role-badge.bot {
+      background-color: var(--sage-tint);
+      color: var(--tertiary);
+      border-color: color-mix(in srgb, var(--tertiary) 35%, transparent);
+    }
+
+    .msg-time {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .msg-content {
+      color: var(--on-surface);
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-width: 68ch;
+    }
+
+    /* Bot Interactive Embed Card */
+    .bot-embed {
+      margin-top: var(--space-xs);
+      background-color: var(--background);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      max-width: 36rem;
+    }
+
+    .bot-embed-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .bot-embed-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-sm);
+    }
+
+    .embed-stat {
+      background-color: var(--surface-container-low);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-xs) var(--space-sm);
+    }
+
+    .embed-stat-label {
+      font-family: var(--font-label);
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+      display: block;
+    }
+
+    .embed-stat-val {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-sm);
+    }
+
+    .quiz-btn {
+      padding: var(--space-sm) var(--space-md);
+      min-height: 40px;
+      border-radius: var(--rounded);
+      border: var(--hairline-strong);
+      background-color: var(--surface-container);
+      color: var(--on-surface);
+      text-align: left;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .quiz-btn:hover:not(:disabled) {
+      background-color: var(--surface-container-high);
+      border-color: var(--primary);
+    }
+
+    .quiz-btn.correct {
+      background-color: var(--sage-tint);
+      border-color: var(--tertiary);
+      color: var(--tertiary);
+      font-weight: 600;
+    }
+
+    .quiz-btn.wrong {
+      background-color: var(--error-tint);
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    /* Reactions & Message Actions */
+    .message-footer {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      margin-top: var(--space-xs);
+    }
+
+    .reaction-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      min-height: 28px;
+      border-radius: var(--rounded-full);
+      border: var(--hairline);
+      background-color: var(--background);
+      color: var(--on-surface-variant);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      cursor: pointer;
+      transition: border-color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .reaction-pill:hover,
+    .reaction-pill.reacted {
+      border-color: var(--primary);
+      background-color: var(--cyan-tint);
+      color: var(--primary);
+    }
+
+    .msg-actions {
+      position: absolute;
+      top: var(--space-xs);
+      right: var(--space-sm);
+      display: flex;
+      gap: 2px;
+      opacity: 0;
+      transition: opacity var(--dur-micro) var(--ease-out);
+      background-color: var(--background);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: 2px;
+    }
+
+    .message-row:hover .msg-actions,
+    .message-row:focus-within .msg-actions {
+      opacity: 1;
+    }
+
+    /* Chat Composer */
+    .composer-wrap {
+      position: relative;
+      z-index: 6;
+      padding: var(--space-sm) var(--space-lg) var(--space-md);
+      background-color: color-mix(in srgb, var(--surface-container-low) 90%, transparent);
+      border-top: var(--hairline);
+      flex-shrink: 0;
+    }
+
+    .composer-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-xs);
+    }
+
+    .composer-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+
+    .composer-box {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-sm);
+      background-color: var(--background);
+      border: var(--hairline-strong);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xs) var(--space-sm);
+    }
+
+    .composer-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--on-surface);
+      font-size: var(--body-size);
+      padding: var(--space-sm) var(--space-xs);
+      outline: none;
+      min-height: 40px;
+      max-height: 120px;
+      resize: none;
+    }
+
+    .composer-input::placeholder {
+      color: var(--on-surface-variant);
+    }
+
+    /* Popovers (Slash Commands & Emoji Picker) */
+    .floating-popover {
+      position: absolute;
+      bottom: calc(100% + var(--space-xs));
+      left: var(--space-lg);
+      right: var(--space-lg);
+      max-width: 28rem;
+      background-color: var(--surface-container-high);
+      border: var(--hairline-strong);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-sm);
+      display: none;
+      flex-direction: column;
+      gap: var(--space-xs);
+      z-index: 30;
+    }
+
+    .floating-popover.open {
+      display: flex;
+    }
+
+    .floating-popover.emoji-pop {
+      left: auto;
+      right: var(--space-lg);
+      width: 19rem;
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-xs);
+    }
+
+    .emoji-btn {
+      min-height: 38px;
+      border-radius: var(--rounded);
+      border: 1px solid transparent;
+      background-color: var(--surface-container);
+      font-size: 1.125rem;
+      cursor: pointer;
+    }
+
+    .emoji-btn:hover {
+      background-color: var(--primary-container);
+      border-color: var(--primary);
+    }
+
+    .slash-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      padding: var(--space-sm);
+      border-radius: var(--rounded);
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .slash-item:hover {
+      background-color: var(--surface-container);
+      border-color: var(--primary);
+    }
+
+    /* Column 4: Member List Panel */
+    .member-panel {
+      background-color: var(--surface-container-low);
+      border-left: var(--hairline);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      padding: var(--space-md) var(--space-sm);
+      gap: var(--space-lg);
+      z-index: 15;
+    }
+
+    .app-shell.members-collapsed .member-panel {
+      display: none;
+    }
+
+    .member-group-title {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+      padding: 0 var(--space-sm);
+      margin-bottom: var(--space-xs);
+    }
+
+    .member-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm);
+      border-radius: var(--rounded);
+      background-color: var(--surface-container);
+      border: var(--hairline);
+    }
+
+    .template-empty-members {
+      padding: var(--space-md);
+      border-radius: var(--rounded-lg);
+      border: 1px dashed var(--outline);
+      background-color: var(--background);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: var(--scrim);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      width: 100%;
+      max-width: 44rem;
+      max-height: 90dvh;
+      background: var(--panel-gradient);
+      border: var(--hairline-strong);
+      border-radius: var(--rounded-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-dialog.wide {
+      max-width: 56rem;
+    }
+
+    .modal-header {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: var(--hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .modal-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 600;
+      letter-spacing: var(--heading-tracking);
+      margin: 0;
+    }
+
+    .modal-body {
+      padding: var(--space-lg);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .tab-strip {
+      display: flex;
+      gap: var(--space-sm);
+      border-bottom: var(--hairline);
+      padding: 0 var(--space-lg);
+      background-color: var(--surface-container-low);
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: var(--space-sm) var(--space-md);
+      min-height: 44px;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      letter-spacing: var(--label-tracking);
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+      width: 100%;
+      padding: var(--space-sm) var(--space-md);
+      min-height: 42px;
+      border-radius: var(--rounded);
+      border: var(--hairline-strong);
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-size: var(--body-size);
+    }
+
+    .field-select {
+      padding-right: var(--space-xl);
+    }
+
+    .theme-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .theme-card {
+      padding: var(--space-md);
+      border-radius: var(--rounded-lg);
+      border: var(--hairline-strong);
+      background-color: var(--background);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      transition: border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .theme-card.active {
+      border-color: var(--primary);
+      background-color: var(--primary-container);
+    }
+
+    /* Call Grid Modal */
+    .call-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .call-tile {
+      min-height: 220px;
+      border-radius: var(--rounded-lg);
+      border: var(--hairline-strong);
+      background-color: var(--background);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: var(--space-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .call-tile.speaking {
+      border-color: var(--tertiary);
+    }
+
+    .call-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .call-video.active {
+      display: block;
+    }
+
+    .call-ring {
+      width: 4.5rem;
+      height: 4.5rem;
+      border-radius: var(--rounded-full);
+      background-color: var(--primary-container);
+      border: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      z-index: 2;
+    }
+
+    .call-tile.speaking .call-ring {
+      border-color: var(--tertiary);
+      animation: hydroPulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes hydroPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .call-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding-top: var(--space-sm);
+      border-top: var(--hairline);
+    }
+
+    /* Code Export Box */
+    .code-preview {
+      width: 100%;
+      min-height: 220px;
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      background-color: var(--background);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      color: var(--on-surface);
+      resize: vertical;
+    }
+
+    .inline-notice {
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      background-color: var(--sage-tint);
+      border: 1px solid color-mix(in srgb, var(--tertiary) 35%, transparent);
+      color: var(--tertiary);
+      font-size: 0.875rem;
+      display: none;
+    }
+
+    .inline-notice.visible {
+      display: block;
+    }
+
+    .inline-notice.warn {
+      background-color: var(--warning-tint);
+      border-color: color-mix(in srgb, var(--warning) 35%, transparent);
+      color: var(--warning);
+    }
+
+    /* Toast Banner */
+    .toast-status {
+      position: fixed;
+      bottom: var(--space-lg);
+      right: var(--space-lg);
+      z-index: 60;
+      background-color: var(--surface-container-high);
+      border: 1px solid var(--primary);
+      color: var(--on-surface);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      display: none;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .toast-status.visible {
+      display: flex;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .app-shell,
+      .app-shell.members-collapsed {
+        grid-template-columns: var(--rail-width) var(--sidebar-width) minmax(0, 1fr);
+      }
+
+      .member-panel {
+        position: fixed;
+        top: var(--topbar-height);
+        right: 0;
+        bottom: 0;
+        width: var(--members-width);
+        display: none;
+        z-index: 35;
+      }
+
+      .app-shell.members-drawer-open .member-panel {
+        display: flex;
+      }
+
+      .search-box {
+        width: 9rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app-shell,
+      .app-shell.members-collapsed {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .server-rail,
+      .channel-sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        display: none;
+      }
+
+      .server-rail {
+        left: 0;
+        width: var(--rail-width);
+        z-index: 42;
+      }
+
+      .channel-sidebar {
+        left: var(--rail-width);
+        width: calc(100vw - var(--rail-width));
+        max-width: 17rem;
+        z-index: 41;
+      }
+
+      .app-shell.mobile-nav-open .server-rail,
+      .app-shell.mobile-nav-open .channel-sidebar {
+        display: flex;
+      }
+
+      .mobile-nav-btn {
+        display: inline-flex;
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .topic-divider,
+      .channel-topic,
+      .search-box {
+        display: none;
+      }
+
+      .chat-feed,
+      .composer-wrap {
+        padding-left: var(--space-md);
+        padding-right: var(--space-md);
+      }
+
+      .pill-btn .btn-text-hide-sm {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-shell" class="app-shell">
+    <!-- 1. Server Sidebar (Kolam) -->
+    <nav class="server-rail" aria-label="Daftar Kolam">
+      <div class="server-item" id="home-rail-item">
+        <span class="server-pill" aria-hidden="true"></span>
+        <button type="button" class="squircle-btn" onclick="selectHomeServer()" title="Beranda Fishcord" aria-label="Beranda Fishcord">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.47-3.44 6-7 6s-7.56-2.53-8.5-6Z"/>
+            <path d="M18 12v.5"/>
+            <path d="M16 17.93a9.77 9.77 0 0 1 0-11.86"/>
+            <path d="M7 10.67C7 8 5.58 5.97 2.73 5.5c-1 1.5-1 5 .23 6.5-1.24 1.5-1.24 5-.23 6.5C5.58 18.03 7 16 7 13.33"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="rail-divider" role="separator"></div>
+
+      <div id="server-list" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-sm);width:100%;"></div>
+
+      <div class="server-item">
+        <button type="button" class="squircle-btn action-btn" onclick="openCreateServerModal()" title="Buat Kolam Baru" aria-label="Buat Kolam Baru">
+          <i data-lucide="plus" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="rail-spacer"></div>
+
+      <div class="server-item">
+        <button type="button" class="squircle-btn" onclick="openExportModal()" title="Ekspor Template GitHub" aria-label="Ekspor Template GitHub">
+          <i data-lucide="code-2" aria-hidden="true"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- 2. Channel & Navigation Sidebar -->
+    <aside class="channel-sidebar" aria-label="Daftar Saluran">
+      <div class="server-header">
+        <div class="server-title-wrap">
+          <h2 id="active-server-name" class="server-name">Kolam Utama</h2>
+          <span class="server-sub">TEMPLATE BERSIH</span>
+        </div>
+        <button type="button" class="icon-btn" onclick="openSettingsModal('appearance')" title="Tema & Latar Samudra" aria-label="Tema dan Latar Samudra">
+          <i data-lucide="palette" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="channel-scroll" id="channel-list"></div>
+
+      <!-- Connected Voice Room Dock -->
+      <div id="voice-dock" class="voice-dock" aria-live="polite">
+        <div class="voice-dock-top">
+          <div class="voice-status-text">
+            <span class="voice-status-title">Suara Terhubung</span>
+            <span id="voice-dock-room" class="voice-status-room">Suara Dalam Air</span>
+          </div>
+          <div class="voice-dock-actions">
+            <button type="button" class="icon-btn active" onclick="openCallModal()" title="Tampilan Panggilan" aria-label="Buka Tampilan Panggilan">
+              <i data-lucide="layout-grid" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="icon-btn danger-active" onclick="leaveVoiceChannel()" title="Putuskan Suara" aria-label="Putuskan Saluran Suara">
+              <i data-lucide="phone-off" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile Strip -->
+      <div class="user-strip">
+        <button type="button" class="user-trigger" onclick="openSettingsModal('profile')" aria-label="Pengaturan Profil dan Status Akuatik">
+          <span class="avatar-badge" id="strip-avatar">
+            <span id="strip-avatar-glyph" aria-hidden="true">🐠</span>
+            <span id="strip-status-dot" class="status-dot online" aria-hidden="true"></span>
+          </span>
+          <span class="user-meta">
+            <span id="strip-username" class="user-name">Penjelajah Laut</span>
+            <span id="strip-custom-status" class="user-sub">Menjelajahi terumbu</span>
+          </span>
+        </button>
+        <div class="strip-controls">
+          <button type="button" id="btn-mic" class="icon-btn" onclick="toggleMic()" title="Bisukan Mikrofon" aria-label="Bisukan Mikrofon">
+            <i data-lucide="mic" aria-hidden="true"></i>
+          </button>
+          <button type="button" id="btn-deafen" class="icon-btn" onclick="toggleDeafen()" title="Tulikan Audio" aria-label="Tulikan Audio">
+            <i data-lucide="headphones" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="icon-btn" onclick="openSettingsModal('profile')" title="Pengaturan" aria-label="Buka Pengaturan">
+            <i data-lucide="settings" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 3. Main Chat Area -->
+    <main class="chat-main">
+      <div id="wallpaper-layer" class="wallpaper-layer" aria-hidden="true"></div>
+
+      <header class="chat-header">
+        <div class="chat-title-area">
+          <button type="button" class="icon-btn mobile-nav-btn" onclick="toggleMobileNav()" aria-label="Buka Navigasi Saluran">
+            <i data-lucide="menu" aria-hidden="true"></i>
+          </button>
+          <i data-lucide="hash" aria-hidden="true" style="color:var(--primary);flex-shrink:0;"></i>
+          <h1 id="active-channel-name" class="channel-heading">kolam-obrolan</h1>
+          <span class="topic-divider" aria-hidden="true"></span>
+          <span id="active-channel-topic" class="channel-topic">Ruang obrolan utama bertema samudra — bebas pengguna tiruan</span>
+        </div>
+
+        <div class="header-actions">
+          <div class="search-box">
+            <label for="chat-search-input">Cari pesan</label>
+            <i data-lucide="search" aria-hidden="true" style="width:15px;height:15px;color:var(--on-surface-variant);flex-shrink:0;"></i>
+            <input type="search" id="chat-search-input" placeholder="Cari pesan…" oninput="handleSearchInput(this.value)">
+          </div>
+
+          <button type="button" id="btn-sfx-toggle" class="icon-btn active" onclick="toggleSfxQuick()" title="Suara Gelembung Aktif" aria-label="Aktif atau Nonaktifkan Suara Gelembung">
+            <i data-lucide="volume-2" aria-hidden="true"></i>
+          </button>
+
+          <button type="button" class="icon-btn" onclick="openCallModal()" title="Tampilan Panggilan Suara & Video" aria-label="Buka Tampilan Panggilan">
+            <i data-lucide="video" aria-hidden="true"></i>
+          </button>
+
+          <button type="button" class="pill-btn" onclick="openExportModal()" title="Salin atau Unduh Template GitHub">
+            <i data-lucide="git-branch" aria-hidden="true" style="width:15px;height:15px;"></i>
+            <span class="btn-text-hide-sm">Ekspor GitHub</span>
+          </button>
+
+          <button type="button" id="btn-members-toggle" class="icon-btn active" onclick="toggleMembersPanel()" title="Tampilkan Daftar Anggota" aria-label="Tampilkan atau Sembunyikan Daftar Anggota">
+            <i data-lucide="users" aria-hidden="true"></i>
+          </button>
+        </div>
+      </header>
+
+      <section id="chat-feed" class="chat-feed" aria-label="Riwayat Obrolan" aria-live="polite"></section>
+
+      <div class="composer-wrap">
+        <!-- Slash Command Autocomplete -->
+        <div id="slash-popover" class="floating-popover" role="listbox" aria-label="Perintah FishBot"></div>
+
+        <!-- Emoji Picker -->
+        <div id="emoji-popover" class="floating-popover emoji-pop" role="dialog" aria-label="Pilih Emoji Reaksi">
+          <span class="field-label">Sisipkan Emoji Samudra</span>
+          <div id="composer-emoji-grid" class="emoji-grid"></div>
+        </div>
+
+        <div class="composer-label-row">
+          <label for="chat-input" id="composer-label" class="composer-label">Kirim pesan ke #kolam-obrolan • Ketik / untuk FishBot</label>
+          <button type="button" id="btn-clear-chat" class="channel-add-btn" onclick="clearCurrentChannel(this)" title="Bersihkan pesan di saluran ini" style="font-family:var(--font-label);font-size:var(--label-size);gap:4px;">
+            <i data-lucide="trash-2" aria-hidden="true" style="width:13px;height:13px;"></i>
+            <span>Bersihkan</span>
+          </button>
+        </div>
+
+        <div class="composer-box">
+          <button type="button" class="icon-btn" onclick="toggleEmojiPopover()" title="Pilih Emoji" aria-label="Buka Pemilih Emoji">
+            <i data-lucide="smile" aria-hidden="true"></i>
+          </button>
+          <textarea id="chat-input" class="composer-input" rows="1" placeholder="Tulis pesan atau ketik /ikan, /kuis-laut, /pancing, /bantuan…" oninput="handleComposerInput(this.value)" onkeydown="handleComposerKeydown(event)"></textarea>
+          <button type="button" class="pill-btn primary" onclick="sendMessageFromInput()" aria-label="Kirim Pesan">
+            <i data-lucide="send" aria-hidden="true" style="width:15px;height:15px;"></i>
+            <span>Kirim</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 4. Member List Panel (Clean Template — Zero Fake Users) -->
+    <aside id="member-panel" class="member-panel" aria-label="Daftar Anggota">
+      <div>
+        <div class="member-group-title">Pengguna Lokal — 1</div>
+        <div class="member-card">
+          <span class="avatar-badge">
+            <span id="member-avatar-glyph" aria-hidden="true">🐠</span>
+            <span id="member-status-dot" class="status-dot online" aria-hidden="true"></span>
+          </span>
+          <div class="user-meta">
+            <span id="member-username" class="user-name">Penjelajah Laut</span>
+            <span id="member-role-label" class="user-sub">Penjaga Karang • Online</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="member-group-title">Bot Utilitas — 1</div>
+        <div class="member-card">
+          <span class="avatar-badge" style="background-color:var(--sage-tint);color:var(--tertiary);border-color:var(--tertiary);">
+            <span aria-hidden="true">🤖</span>
+            <span class="status-dot online" aria-hidden="true"></span>
+          </span>
+          <div class="user-meta">
+            <span class="user-name">FishBot <span class="role-badge bot">BOT</span></span>
+            <span class="user-sub">Perintah /ikan &amp; /kuis-laut</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="member-group-title">Anggota Terhubung — 0</div>
+        <div class="template-empty-members">
+          <strong style="color:var(--on-surface);">Daftar Anggota Bersih</strong>
+          <span>Tidak ada pengguna palsu atau akun dummy. Template ini siap dihubungkan ke WebSocket, Supabase, atau Firebase Anda.</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="settings-modal-title" class="modal-title">Pengaturan Fishcord</h2>
+        <button type="button" class="icon-btn" onclick="closeModal('settings-modal')" aria-label="Tutup Pengaturan">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="tab-strip" role="tablist">
+        <button type="button" class="tab-btn active" id="tab-btn-profile" onclick="switchSettingsTab('profile')">Profil &amp; Status</button>
+        <button type="button" class="tab-btn" id="tab-btn-appearance" onclick="switchSettingsTab('appearance')">Tema &amp; Latar</button>
+        <button type="button" class="tab-btn" id="tab-btn-audio" onclick="switchSettingsTab('audio')">Audio Gelembung</button>
+      </div>
+      <div class="modal-body">
+        <!-- Tab 1: Profile & Aquatic Status -->
+        <div id="settings-tab-profile" style="display:flex;flex-direction:column;gap:var(--space-md);">
+          <div class="form-grid">
+            <div class="field-group">
+              <label for="input-username" class="field-label">Nama Tampilan</label>
+              <input id="input-username" type="text" class="field-input" maxlength="28" oninput="updateProfileField('name', this.value)">
+            </div>
+            <div class="field-group">
+              <label for="input-role" class="field-label">Peran Akuatik</label>
+              <select id="input-role" class="field-select" onchange="updateProfileField('role', this.value)">
+                <option value="Penjaga Karang">Penjaga Karang (Mod)</option>
+                <option value="Apex Predator">Apex Predator (Admin)</option>
+                <option value="Penjelajah">Penjelajah (Anggota)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field-group">
+              <label for="input-status" class="field-label">Status Kehadiran</label>
+              <select id="input-status" class="field-select" onchange="updateProfileField('status', this.value)">
+                <option value="online">Online — Siap Mengobrol</option>
+                <option value="idle">Berenang (Idle)</option>
+                <option value="dnd">Jangan Ganggu (DND)</option>
+                <option value="offline">Menyelam Dalam (Offline)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label for="input-custom-status" class="field-label">Pesan Status Akuatik</label>
+              <input id="input-custom-status" type="text" class="field-input" maxlength="44" oninput="updateProfileField('customStatus', this.value)">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Pilih Avatar Biota Laut</span>
+            <div class="cmd-chip-row" id="avatar-picker-row"></div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Theme & Wallpaper -->
+        <div id="settings-tab-appearance" style="display:none;flex-direction:column;gap:var(--space-lg);">
+          <div class="field-group">
+            <span class="field-label">Pilih Tema Samudra</span>
+            <div class="theme-cards">
+              <button type="button" class="theme-card" id="theme-card-deep-ocean" onclick="setTheme('deep-ocean')">
+                <strong>Deep Ocean</strong>
+                <span style="font-size:0.8125rem;color:var(--on-surface-variant);">Slate mineral &amp; cyan gletser</span>
+              </button>
+              <button type="button" class="theme-card" id="theme-card-abyssal" onclick="setTheme('abyssal')">
+                <strong>Abyssal</strong>
+                <span style="font-size:0.8125rem;color:var(--on-surface-variant);">Palung malam &amp; biru bioluminesen</span>
+              </button>
+              <button type="button" class="theme-card" id="theme-card-coral-reef" onclick="setTheme('coral-reef')">
+                <strong>Coral Reef</strong>
+                <span style="font-size:0.8125rem;color:var(--on-surface-variant);">Terumbu gelap &amp; aksen koral hangat</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="select-wallpaper-preset" class="field-label">Latar Samudra Bawaan (SVG Ringan)</label>
+            <select id="select-wallpaper-preset" class="field-select" onchange="setWallpaperPreset(this.value)">
+              <option value="caustics">Cahaya Permukaan (Caustics)</option>
+              <option value="abyss-waves">Gelombang Palung Abisal</option>
+              <option value="coral-grid">Jejaring Terumbu Bercahaya</option>
+              <option value="none">Polos Tanpa Latar</option>
+            </select>
+          </div>
+
+          <div class="form-grid">
+            <div class="field-group">
+              <label for="input-wallpaper-file" class="field-label">Unggah Wallpaper Laut Kustom (Lokal)</label>
+              <input id="input-wallpaper-file" type="file" accept="image/*" class="field-input" onchange="handleWallpaperUpload(this)">
+            </div>
+            <div class="field-group" style="justify-content:flex-end;">
+              <button type="button" class="pill-btn" onclick="resetCustomWallpaper()">Gunakan Latar Bawaan</button>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field-group">
+              <label for="slider-wp-opacity" class="field-label">Opasitas Latar: <span id="val-wp-opacity">26%</span></label>
+              <input id="slider-wp-opacity" type="range" min="0" max="75" value="26" oninput="updateWallpaperOpacity(this.value)">
+            </div>
+            <div class="field-group">
+              <label for="slider-wp-blur" class="field-label">Blur Latar: <span id="val-wp-blur">0px</span></label>
+              <input id="slider-wp-blur" type="range" min="0" max="12" value="0" oninput="updateWallpaperBlur(this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Bubble Audio -->
+        <div id="settings-tab-audio" style="display:none;flex-direction:column;gap:var(--space-md);">
+          <div class="field-group">
+            <label for="toggle-sfx-check" class="field-label">Efek Suara Gelembung (Web Audio API)</label>
+            <div style="display:flex;align-items:center;gap:var(--space-sm);">
+              <input id="toggle-sfx-check" type="checkbox" checked onchange="setSfxEnabled(this.checked)" style="width:20px;height:20px;">
+              <span>Aktifkan efek suara gelembung air saat mengirim pesan, reaksi, dan panggilan suara</span>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="slider-sfx-volume" class="field-label">Volume Efek Suara: <span id="val-sfx-volume">70%</span></label>
+            <input id="slider-sfx-volume" type="range" min="0" max="100" value="70" oninput="updateSfxVolume(this.value)">
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Uji Sintesis Audio</span>
+            <div class="cmd-chip-row">
+              <button type="button" class="cmd-chip" onclick="playBubbleSound('send')">🫧 Gelembung Pesan</button>
+              <button type="button" class="cmd-chip" onclick="playBubbleSound('bot')">🐚 Balasan FishBot</button>
+              <button type="button" class="cmd-chip" onclick="playBubbleSound('voice')">📡 Sonar Suara</button>
+              <button type="button" class="cmd-chip" onclick="playBubbleSound('react')">💧 Tetesan Reaksi</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voice / Video Call Grid View Modal -->
+  <div id="call-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="call-modal-title">
+    <div class="modal-dialog wide">
+      <div class="modal-header">
+        <div>
+          <h2 id="call-modal-title" class="modal-title">Ruang Panggilan — <span id="call-room-label">Suara Dalam Air</span></h2>
+          <span style="font-size:0.8125rem;color:var(--on-surface-variant);">Tampilan grid panggilan suara &amp; video bersih untuk klien WebRTC</span>
+        </div>
+        <button type="button" class="icon-btn" onclick="closeModal('call-modal')" aria-label="Tutup Tampilan Panggilan">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="call-notice" class="inline-notice"></div>
+        <div class="call-grid">
+          <div id="local-call-tile" class="call-tile speaking">
+            <video id="local-video-preview" class="call-video" autoplay muted playsinline></video>
+            <div class="call-ring" id="call-avatar-glyph">🐠</div>
+            <strong id="call-username" style="z-index:2;">Penjelajah Laut (Anda)</strong>
+            <span id="call-mic-badge" class="role-badge bot" style="z-index:2;">Mikrofon Aktif</span>
+          </div>
+          <div class="call-tile" style="border-style:dashed;">
+            <i data-lucide="radio" aria-hidden="true" style="width:32px;height:32px;color:var(--on-surface-variant);"></i>
+            <strong>Slot Rekan WebRTC</strong>
+            <span style="text-align:center;font-size:0.8125rem;color:var(--on-surface-variant);max-width:26ch;">Kosong tanpa peserta palsu. Sambungkan sinyal PeerConnection untuk menampilkan video rekan.</span>
+          </div>
+        </div>
+        <div class="call-controls">
+          <button type="button" id="call-btn-mic" class="pill-btn" onclick="toggleMic()">
+            <i data-lucide="mic" aria-hidden="true" style="width:16px;height:16px;"></i>
+            <span>Bisukan Mic</span>
+          </button>
+          <button type="button" id="call-btn-cam" class="pill-btn" onclick="toggleCameraPreview()">
+            <i data-lucide="video" aria-hidden="true" style="width:16px;height:16px;"></i>
+            <span>Uji Kamera</span>
+          </button>
+          <button type="button" class="pill-btn" onclick="playBubbleSound('voice')">
+            <i data-lucide="waves" aria-hidden="true" style="width:16px;height:16px;"></i>
+            <span>Uji Gelombang</span>
+          </button>
+          <button type="button" class="pill-btn primary" onclick="joinOrToggleVoiceFromCall()">
+            <i data-lucide="phone-call" aria-hidden="true" style="width:16px;height:16px;"></i>
+            <span id="call-join-label">Gabung Suara</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Server (Kolam) Modal -->
+  <div id="create-server-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="create-server-title">
+    <div class="modal-dialog" style="max-width:30rem;">
+      <div class="modal-header">
+        <h2 id="create-server-title" class="modal-title">Buat Kolam Baru</h2>
+        <button type="button" class="icon-btn" onclick="closeModal('create-server-modal')" aria-label="Tutup">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="field-group">
+          <label for="new-server-name" class="field-label">Nama Kolam</label>
+          <input id="new-server-name" type="text" class="field-input" maxlength="28" placeholder="Mis. Laguna Riset">
+        </div>
+        <div class="field-group">
+          <label for="new-server-icon" class="field-label">Ikon Akuatik</label>
+          <select id="new-server-icon" class="field-select">
+            <option value="fish">Ikan Tropis</option>
+            <option value="shell">Kerang Laut</option>
+            <option value="anchor">Jangkar Samudra</option>
+            <option value="waves">Arus Gelombang</option>
+          </select>
+        </div>
+        <div id="create-server-error" class="inline-notice warn"></div>
+        <div style="display:flex;justify-content:flex-end;gap:var(--space-sm);">
+          <button type="button" class="pill-btn" onclick="closeModal('create-server-modal')">Batal</button>
+          <button type="button" class="pill-btn primary" onclick="createNewServer()">Buat Kolam</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export GitHub Template Modal -->
+  <div id="export-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+    <div class="modal-dialog wide">
+      <div class="modal-header">
+        <div>
+          <h2 id="export-modal-title" class="modal-title">Ekspor Template GitHub</h2>
+          <span style="font-size:0.8125rem;color:var(--on-surface-variant);">Kode bersih tanpa pengguna tiruan — siap diunggah ke repositori GitHub atau GitHub Pages</span>
+        </div>
+        <button type="button" class="icon-btn" onclick="closeModal('export-modal')" aria-label="Tutup Ekspor">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="tab-strip" role="tablist">
+        <button type="button" class="tab-btn active" id="export-tab-html" onclick="switchExportTab('html')">index.html (Single File)</button>
+        <button type="button" class="tab-btn" id="export-tab-readme" onclick="switchExportTab('readme')">README.md</button>
+      </div>
+      <div class="modal-body">
+        <div id="export-notice" class="inline-notice"></div>
+        <div class="field-group">
+          <label for="export-code-box" id="export-code-label" class="field-label">Pratinjau Kode index.html Bersih</label>
+          <textarea id="export-code-box" class="code-preview" readonly></textarea>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--space-sm);justify-content:flex-end;">
+          <button type="button" class="pill-btn" onclick="copyExportCode()">
+            <i data-lucide="copy" aria-hidden="true" style="width:15px;height:15px;"></i>
+            <span>Salin Kode</span>
+          </button>
+          <button type="button" class="pill-btn primary" onclick="downloadExportFile()">
+            <i data-lucide="download" aria-hidden="true" style="width:15px;height:15px;"></i>
+            <span id="export-download-label">Unduh index.html</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Status -->
+  <div id="toast-status" class="toast-status" role="status" aria-live="polite"></div>
+
+  <api-shim></api-shim>
+  <script>
+    const DEFAULT_SERVERS = [
+      {
+        id: 'kolam-utama',
+        name: 'Kolam Utama',
+        icon: 'fish',
+        textChannels: [
+          { id: 'kolam-obrolan', name: 'kolam-obrolan', topic: 'Ruang obrolan utama bertema samudra — bebas pengguna tiruan' },
+          { id: 'berita-samudra', name: 'berita-samudra', topic: 'Catatan ekosistem laut, kuis FishBot, dan pembaruan kolam' }
+        ],
+        voiceChannels: [
+          { id: 'suara-dalam-air', name: 'Suara Dalam Air' }
+        ]
+      },
+      {
+        id: 'terumbu-karang',
+        name: 'Terumbu Karang',
+        icon: 'shell',
+        textChannels: [
+          { id: 'diskusi-terumbu', name: 'diskusi-terumbu', topic: 'Eksplorasi terumbu karang dan ide fitur Fishcord' },
+          { id: 'catatan-ekspedisi', name: 'catatan-ekspedisi', topic: 'Log pribadi dan pengujian perintah bot' }
+        ],
+        voiceChannels: [
+          { id: 'ruang-hidrofon', name: 'Ruang Hidrofon' }
+        ]
+      }
+    ];
+
+    const FISHBOT_SPECIES = [
+      {
+        name: 'Coelacanth (Latimeria chalumnae)',
+        habitat: 'Lereng vulkanik laut dalam (150–700 m)',
+        status: 'Terancam Kritis',
+        fact: `Sering disebut "fosil hidup", ikan bersirip lobus ini ditemukan kembali di perairan Sulawesi Utara dan Samudra Hindia.`
+      },
+      {
+        name: 'Pari Manta Karang (Mobula alfredi)',
+        habitat: 'Terumbu karang tropis (0–120 m)',
+        status: 'Rentan',
+        fact: `Memiliki rasio otak-ke-tubuh terbesar di antara seluruh jenis ikan dan mampu mengenali bayangan dirinya di cermin.`
+      },
+      {
+        name: 'Ikan Badut Ocellaris (Amphiprion ocellaris)',
+        habitat: 'Anemon laut dangkal (1–15 m)',
+        status: 'Risiko Rendah',
+        fact: `Lapisan lendir khusus di kulitnya membuat ikan badut kebal terhadap sengatan tentakel anemon inangnya.`
+      },
+      {
+        name: 'Gurita Mimik (Thaumoctopus mimicus)',
+        habitat: 'Muara pasir Indo-Pasifik (2–30 m)',
+        status: 'Kurang Data',
+        fact: `Ditemukan di perairan Indonesia; dapat meniru bentuk dan gerakan ular laut, ikan pari, serta lionfish untuk mengelabui pemangsa.`
+      },
+      {
+        name: 'Ikan Mandarinfish (Synchiropus splendidus)',
+        habitat: 'Laguna karang Pasifik Barat (1–18 m)',
+        status: 'Risiko Rendah',
+        fact: `Satu dari hanya dua spesies hewan bertulang belakang yang menghasilkan pigmen biru sejati melalui struktur sel kromatofor.`
+      }
+    ];
+
+    const QUIZ_BANK = [
+      {
+        q: `Zona laut manakah yang masih menerima cukup cahaya matahari untuk fotosintesis fitoplankton?`,
+        options: [`Zona Epifelagik (0–200 m)`, `Zona Batial (1.000–4.000 m)`, `Zona Abisal (4.000–6.000 m)`, `Zona Hadal (>6.000 m)`],
+        answer: 0,
+        explain: `Zona Epifelagik atau zona eufotik (0–200 meter) adalah lapisan teratas samudra tempat cahaya matahari menembus untuk fotosintesis.`
+      },
+      {
+        q: `Mengapa banyak organisme laut dalam menghasilkan cahaya bioluminesen berwarna biru-hijau?`,
+        options: [`Panjang gelombang biru merambat paling jauh di air`, `Warna merah lebih panas di dasar laut`, `Untuk menarik sinar bulan dari permukaan`, `Karena kadar garam di dasar laut nol`],
+        answer: 0,
+        explain: `Air laut menyerap cahaya merah terlebih dahulu; spektrum biru-hijau (450–490 nm) memiliki penetrasi terjauh di dalam air.`
+      },
+      {
+        q: `Manakah berikut ini yang merupakan ikan bertulang rawan (Chondrichthyes)?`,
+        options: [`Pari Manta`, `Ikan Tuna Sirip Kuning`, `Ikan Kakap Merah`, `Kuda Laut`],
+        answer: 0,
+        explain: `Hiu dan pari (termasuk Pari Manta) memiliki kerangka dari tulang rawan, bukan tulang sejati.`
+      }
+    ];
+
+    const FISHING_CATCHES = [
+      { item: `Ikan Tuna Sirip Biru`, rarity: `Langka`, pts: 45 },
+      { item: `Kuda Laut Kerdil`, rarity: `Unik`, pts: 30 },
+      { item: `Kerang Mutiara Berkilau`, rarity: `Istimewa`, pts: 55 },
+      { item: `Ikan Kakap Karang`, rarity: `Umum`, pts: 15 },
+      { item: `Bintang Laut Biru`, rarity: `Umum`, pts: 20 }
+    ];
+
+    const SLASH_COMMANDS = [
+      { cmd: '/ikan', desc: 'Tampilkan fakta spesies laut acak dari basis data FishBot' },
+      { cmd: '/kuis-laut', desc: 'Mulai kuis interaktif biologi laut langsung di obrolan' },
+      { cmd: '/pancing', desc: 'Lempar kail virtual di kolam dan catat poin tangkapan' },
+      { cmd: '/bantuan', desc: 'Lihat daftar perintah FishBot dan pintasan klien' }
+    ];
+
+    const AVATAR_CHOICES = ['🐠', '🐡', '🦈', '🐙', '🪼', '🐬', '🦀', '🪸'];
+    const EMOJI_CHOICES = ['🫧', '🐠', '🌊', '🪸', '🦈', '🐙', '👍', '❤️', '✨', '🎣', '🐚', '🔊'];
+
+    let appState = {
+      profile: {
+        name: 'Penjelajah Laut',
+        avatar: '🐠',
+        role: 'Penjaga Karang',
+        status: 'online',
+        customStatus: 'Menjelajahi terumbu'
+      },
+      theme: 'deep-ocean',
+      wallpaperPreset: 'caustics',
+      wallpaperOpacity: 26,
+      wallpaperBlur: 0,
+      sfxEnabled: true,
+      sfxVolume: 70,
+      servers: JSON.parse(JSON.stringify(DEFAULT_SERVERS)),
+      activeServerId: 'kolam-utama',
+      activeChannelId: 'kolam-obrolan',
+      connectedVoiceId: null,
+      micMuted: false,
+      deafened: false,
+      membersOpen: true,
+      messagesByChannel: {},
+      fishScore: 0
+    };
+
+    let searchQuery = '';
+    let activeExportTab = 'html';
+    let sessionWallpaperUrl = '';
+    let localCameraStream = null;
+    let audioCtx = null;
+
+    function getAudioCtx() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(function () {});
+      }
+      return audioCtx;
+    }
+
+    function playBubbleSound(kind) {
+      if (!appState.sfxEnabled || appState.deafened) return;
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      const vol = Math.max(0.02, (appState.sfxVolume / 100) * 0.25);
+      const now = ctx.currentTime;
+
+      function tone(startFreq, endFreq, dur, delay, type) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.setValueAtTime(startFreq, now + delay);
+        osc.frequency.exponentialRampToValueAtTime(endFreq, now + delay + dur);
+        gain.gain.setValueAtTime(0.001, now + delay);
+        gain.gain.exponentialRampToValueAtTime(vol, now + delay + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + delay);
+        osc.stop(now + delay + dur + 0.02);
+      }
+
+      if (kind === 'send') {
+        tone(340, 760, 0.11, 0, 'sine');
+      } else if (kind === 'bot') {
+        tone(420, 680, 0.1, 0, 'sine');
+        tone(560, 920, 0.12, 0.09, 'sine');
+      } else if (kind === 'react') {
+        tone(520, 880, 0.07, 0, 'sine');
+      } else if (kind === 'voice') {
+        tone(240, 480, 0.16, 0, 'triangle');
+        tone(380, 720, 0.16, 0.1, 'sine');
+      } else {
+        tone(280, 190, 0.06, 0, 'sine');
+      }
+    }
+
+    async function saveAppState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === 'function') {
+        try {
+          await window.notebookAppApi.setAppState(appState);
+        } catch (e) {
+          // Ignore transient storage errors
+        }
+      }
+    }
+
+    function showToast(text) {
+      const el = document.getElementById('toast-status');
+      if (!el) return;
+      el.textContent = text;
+      el.classList.add('visible');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(function () {
+        el.classList.remove('visible');
+      }, 2600);
+    }
+
+    function getActiveServer() {
+      return appState.servers.find(function (s) { return s.id === appState.activeServerId; }) || appState.servers[0];
+    }
+
+    function getActiveChannel() {
+      const srv = getActiveServer();
+      if (!srv) return null;
+      return srv.textChannels.find(function (c) { return c.id === appState.activeChannelId; }) || srv.textChannels[0];
+    }
+
+    function renderServerRail() {
+      const container = document.getElementById('server-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const iconMap = {
+        fish: 'fish',
+        shell: 'shell',
+        anchor: 'anchor',
+        waves: 'waves'
+      };
+
+      appState.servers.forEach(function (srv) {
+        const wrap = document.createElement('div');
+        wrap.className = 'server-item' + (srv.id === appState.activeServerId ? ' active' : '');
+
+        const pill = document.createElement('span');
+        pill.className = 'server-pill';
+        pill.setAttribute('aria-hidden', 'true');
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'squircle-btn';
+        btn.title = srv.name;
+        btn.setAttribute('aria-label', `Pilih kolam ${srv.name}`);
+        btn.onclick = function () { selectServer(srv.id); };
+
+        const ico = document.createElement('i');
+        ico.setAttribute('data-lucide', iconMap[srv.icon] || 'fish');
+        ico.setAttribute('aria-hidden', 'true');
+        btn.appendChild(ico);
+
+        wrap.appendChild(pill);
+        wrap.appendChild(btn);
+        container.appendChild(wrap);
+      });
+    }
+
+    function renderChannelSidebar() {
+      const srv = getActiveServer();
+      const nameEl = document.getElementById('active-server-name');
+      const listEl = document.getElementById('channel-list');
+      if (!srv || !listEl) return;
+      if (nameEl) nameEl.textContent = srv.name;
+
+      listEl.innerHTML = '';
+
+      // Text channels category
+      const textCat = document.createElement('div');
+      textCat.className = 'category-group';
+      const textHead = document.createElement('div');
+      textHead.className = 'category-header';
+      textHead.innerHTML = `<span>Saluran Teks</span>`;
+      const addTextBtn = document.createElement('button');
+      addTextBtn.type = 'button';
+      addTextBtn.className = 'channel-add-btn';
+      addTextBtn.title = 'Tambah Saluran Teks';
+      addTextBtn.setAttribute('aria-label', 'Tambah Saluran Teks');
+      addTextBtn.innerHTML = `<i data-lucide="plus" aria-hidden="true" style="width:14px;height:14px;"></i>`;
+      addTextBtn.onclick = function () { addQuickTextChannel(srv.id); };
+      textHead.appendChild(addTextBtn);
+      textCat.appendChild(textHead);
+
+      srv.textChannels.forEach(function (ch) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'channel-btn' + (ch.id === appState.activeChannelId ? ' active' : '');
+        btn.onclick = function () { selectTextChannel(ch.id); };
+        btn.innerHTML = `<i data-lucide="hash" class="channel-icon" aria-hidden="true" style="width:16px;height:16px;flex-shrink:0;"></i><span class="channel-label">${escapeHtml(ch.name)}</span>`;
+        textCat.appendChild(btn);
+      });
+      listEl.appendChild(textCat);
+
+      // Voice channels category
+      const voiceCat = document.createElement('div');
+      voiceCat.className = 'category-group';
+      const voiceHead = document.createElement('div');
+      voiceHead.className = 'category-header';
+      voiceHead.innerHTML = `<span>Saluran Suara</span>`;
+      voiceCat.appendChild(voiceHead);
+
+      srv.voiceChannels.forEach(function (vc) {
+        const isConnected = appState.connectedVoiceId === vc.id;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'channel-btn' + (isConnected ? ' voice-active' : '');
+        btn.onclick = function () { toggleVoiceChannel(vc.id, vc.name); };
+        btn.innerHTML = `<i data-lucide="volume-2" class="channel-icon" aria-hidden="true" style="width:16px;height:16px;flex-shrink:0;"></i><span class="channel-label">${escapeHtml(vc.name)}</span>`;
+        voiceCat.appendChild(btn);
+
+        if (isConnected) {
+          const occ = document.createElement('div');
+          occ.className = 'voice-occupant';
+          occ.innerHTML = `
+            <span aria-hidden="true">${appState.profile.avatar}</span>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(appState.profile.name)}</span>
+            <span class="wave-bars ${appState.micMuted ? 'muted' : ''}" aria-hidden="true">
+              <span class="wave-bar"></span>
+              <span class="wave-bar"></span>
+              <span class="wave-bar"></span>
+            </span>
+          `;
+          voiceCat.appendChild(occ);
+        }
+      });
+      listEl.appendChild(voiceCat);
+
+      // Voice dock state
+      const dock = document.getElementById('voice-dock');
+      const dockRoom = document.getElementById('voice-dock-room');
+      if (dock) {
+        if (appState.connectedVoiceId) {
+          dock.classList.add('visible');
+          const found = findVoiceChannelById(appState.connectedVoiceId);
+          if (dockRoom) dockRoom.textContent = found ? found.name : 'Suara Dalam Air';
+        } else {
+          dock.classList.remove('visible');
+        }
+      }
+    }
+
+    function findVoiceChannelById(id) {
+      for (let i = 0; i < appState.servers.length; i++) {
+        const match = appState.servers[i].voiceChannels.find(function (v) { return v.id === id; });
+        if (match) return match;
+      }
+      return null;
+    }
+
+    function renderProfileUI() {
+      const p = appState.profile;
+      const setText = function (id, val) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+      setText('strip-avatar-glyph', p.avatar);
+      setText('strip-username', p.name);
+      setText('strip-custom-status', p.customStatus || statusLabel(p.status));
+      setText('member-avatar-glyph', p.avatar);
+      setText('member-username', p.name);
+      setText('member-role-label', `${p.role} • ${statusLabel(p.status)}`);
+      setText('call-avatar-glyph', p.avatar);
+      setText('call-username', `${p.name} (Anda)`);
+
+      ['strip-status-dot', 'member-status-dot'].forEach(function (id) {
+        const dot = document.getElementById(id);
+        if (dot) {
+          dot.className = `status-dot ${p.status}`;
+        }
+      });
+
+      const micBtn = document.getElementById('btn-mic');
+      if (micBtn) {
+        micBtn.className = 'icon-btn' + (appState.micMuted ? ' danger-active' : '');
+        micBtn.innerHTML = `<i data-lucide="${appState.micMuted ? 'mic-off' : 'mic'}" aria-hidden="true"></i>`;
+      }
+      const deafBtn = document.getElementById('btn-deafen');
+      if (deafBtn) {
+        deafBtn.className = 'icon-btn' + (appState.deafened ? ' danger-active' : '');
+        deafBtn.innerHTML = `<i data-lucide="${appState.deafened ? 'volume-x' : 'headphones'}" aria-hidden="true"></i>`;
+      }
+
+      const callTile = document.getElementById('local-call-tile');
+      const callBadge = document.getElementById('call-mic-badge');
+      const callJoin = document.getElementById('call-join-label');
+      if (callTile) {
+        callTile.className = 'call-tile' + (!appState.micMuted && appState.connectedVoiceId ? ' speaking' : '');
+      }
+      if (callBadge) {
+        callBadge.textContent = appState.micMuted ? 'Mikrofon Dibisukan' : 'Mikrofon Aktif';
+      }
+      if (callJoin) {
+        callJoin.textContent = appState.connectedVoiceId ? 'Putuskan Suara' : 'Gabung Suara';
+      }
+
+      const sfxBtn = document.getElementById('btn-sfx-toggle');
+      if (sfxBtn) {
+        sfxBtn.className = 'icon-btn' + (appState.sfxEnabled ? ' active' : '');
+        sfxBtn.innerHTML = `<i data-lucide="${appState.sfxEnabled ? 'volume-2' : 'volume-x'}" aria-hidden="true"></i>`;
+      }
+    }
+
+    function statusLabel(st) {
+      if (st === 'idle') return 'Berenang';
+      if (st === 'dnd') return 'Jangan Ganggu';
+      if (st === 'offline') return 'Menyelam Dalam';
+      return 'Online';
+    }
+
+    function renderChatHeaderAndFeed() {
+      const ch = getActiveChannel();
+      if (!ch) return;
+
+      const chNameEl = document.getElementById('active-channel-name');
+      const chTopicEl = document.getElementById('active-channel-topic');
+      const compLabel = document.getElementById('composer-label');
+      if (chNameEl) chNameEl.textContent = ch.name;
+      if (chTopicEl) chTopicEl.textContent = ch.topic;
+      if (compLabel) compLabel.textContent = `Kirim pesan ke #${ch.name} • Ketik / untuk FishBot`;
+
+      const feed = document.getElementById('chat-feed');
+      if (!feed) return;
+      feed.innerHTML = '';
+
+      // Clean welcome card (zero fake users)
+      const welcome = document.createElement('div');
+      welcome.className = 'welcome-card';
+      welcome.innerHTML = `
+        <span class="welcome-eyebrow">Saluran Bersih • Template Siap GitHub</span>
+        <h2 class="welcome-title">Selamat datang di #${escapeHtml(ch.name)}</h2>
+        <p class="welcome-desc">Ruang ini bebas dari pesan tiruan dan pengguna dummy. Mulai kirim pesan Anda sendiri atau uji perintah interaktif FishBot di bawah ini:</p>
+        <div class="cmd-chip-row">
+          <button type="button" class="cmd-chip" onclick="runBotCommand('/bantuan')">📘 /bantuan</button>
+          <button type="button" class="cmd-chip" onclick="runBotCommand('/ikan')">🐠 /ikan</button>
+          <button type="button" class="cmd-chip" onclick="runBotCommand('/kuis-laut')">🧭 /kuis-laut</button>
+          <button type="button" class="cmd-chip" onclick="runBotCommand('/pancing')">🎣 /pancing</button>
+        </div>
+      `;
+      feed.appendChild(welcome);
+
+      const list = appState.messagesByChannel[ch.id] || [];
+      const q = searchQuery.trim().toLowerCase();
+      const filtered = q ? list.filter(function (m) {
+        return m.text.toLowerCase().includes(q) || (m.embed && JSON.stringify(m.embed).toLowerCase().includes(q));
+      }) : list;
+
+      if (q && filtered.length === 0) {
+        const emptySearch = document.createElement('div');
+        emptySearch.className = 'template-empty-members';
+        emptySearch.textContent = `Tidak ditemukan pesan yang cocok dengan "${searchQuery}".`;
+        feed.appendChild(emptySearch);
+      }
+
+      filtered.forEach(function (msg) {
+        feed.appendChild(buildMessageElement(ch.id, msg));
+      });
+
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function buildMessageElement(channelId, msg) {
+      const row = document.createElement('article');
+      row.className = 'message-row' + (msg.isBot ? ' bot-msg' : '');
+
+      const avatar = document.createElement('span');
+      avatar.className = 'avatar-badge';
+      if (msg.isBot) {
+        avatar.style.backgroundColor = 'var(--sage-tint)';
+        avatar.style.color = 'var(--tertiary)';
+        avatar.style.borderColor = 'var(--tertiary)';
+      }
+      avatar.innerHTML = `<span aria-hidden="true">${msg.isBot ? '🤖' : escapeHtml(msg.avatar || appState.profile.avatar)}</span>`;
+
+      const body = document.createElement('div');
+      body.className = 'message-body';
+
+      const meta = document.createElement('div');
+      meta.className = 'message-meta';
+      const author = document.createElement('span');
+      author.className = 'msg-author';
+      author.textContent = msg.isBot ? 'FishBot' : (msg.author || appState.profile.name);
+      meta.appendChild(author);
+
+      const badge = document.createElement('span');
+      badge.className = 'role-badge' + (msg.isBot ? ' bot' : '');
+      badge.textContent = msg.isBot ? 'BOT' : (msg.role || appState.profile.role);
+      meta.appendChild(badge);
+
+      const time = document.createElement('span');
+      time.className = 'msg-time';
+      time.textContent = msg.time;
+      meta.appendChild(time);
+
+      const content = document.createElement('div');
+      content.className = 'msg-content';
+      content.textContent = msg.text;
+
+      body.appendChild(meta);
+      body.appendChild(content);
+
+      if (msg.embed) {
+        body.appendChild(buildEmbedElement(channelId, msg));
+      }
+
+      // Reactions footer
+      const footer = document.createElement('div');
+      footer.className = 'message-footer';
+      const reactions = msg.reactions || {};
+      Object.keys(reactions).forEach(function (emoji) {
+        const count = reactions[emoji];
+        if (count > 0) {
+          const pill = document.createElement('button');
+          pill.type = 'button';
+          pill.className = 'reaction-pill reacted';
+          pill.textContent = `${emoji} ${count}`;
+          pill.onclick = function () { toggleReaction(channelId, msg.id, emoji); };
+          footer.appendChild(pill);
+        }
+      });
+
+      ['🫧', '🐠', '🌊'].forEach(function (quickEmoji) {
+        if (!reactions[quickEmoji]) {
+          const pill = document.createElement('button');
+          pill.type = 'button';
+          pill.className = 'reaction-pill';
+          pill.textContent = `${quickEmoji} +`;
+          pill.title = `Tambah reaksi ${quickEmoji}`;
+          pill.onclick = function () { toggleReaction(channelId, msg.id, quickEmoji); };
+          footer.appendChild(pill);
+        }
+      });
+
+      body.appendChild(footer);
+
+      const actions = document.createElement('div');
+      actions.className = 'msg-actions';
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'icon-btn';
+      delBtn.style.width = '30px';
+      delBtn.style.height = '30px';
+      delBtn.title = 'Hapus pesan';
+      delBtn.setAttribute('aria-label', 'Hapus pesan');
+      delBtn.innerHTML = `<i data-lucide="trash-2" aria-hidden="true" style="width:14px;height:14px;"></i>`;
+      delBtn.onclick = function () { deleteMessage(channelId, msg.id); };
+      actions.appendChild(delBtn);
+
+      row.appendChild(avatar);
+      row.appendChild(body);
+      row.appendChild(actions);
+      return row;
+    }
+
+    function buildEmbedElement(channelId, msg) {
+      const emb = msg.embed;
+      const box = document.createElement('div');
+      box.className = 'bot-embed';
+
+      const title = document.createElement('h3');
+      title.className = 'bot-embed-title';
+      title.textContent = emb.title;
+      box.appendChild(title);
+
+      if (emb.desc) {
+        const p = document.createElement('div');
+        p.style.color = 'var(--on-surface-variant)';
+        p.textContent = emb.desc;
+        box.appendChild(p);
+      }
+
+      if (emb.stats && emb.stats.length) {
+        const grid = document.createElement('div');
+        grid.className = 'bot-embed-grid';
+        emb.stats.forEach(function (st) {
+          const card = document.createElement('div');
+          card.className = 'embed-stat';
+          card.innerHTML = `<span class="embed-stat-label">${escapeHtml(st.label)}</span><span class="embed-stat-val">${escapeHtml(String(st.value))}</span>`;
+          grid.appendChild(card);
+        });
+        box.appendChild(grid);
+      }
+
+      if (emb.kind === 'quiz') {
+        const optWrap = document.createElement('div');
+        optWrap.className = 'quiz-options';
+        emb.options.forEach(function (optText, idx) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'quiz-btn';
+          if (typeof emb.chosen === 'number') {
+            b.disabled = true;
+            if (idx === emb.answer) b.classList.add('correct');
+            else if (idx === emb.chosen) b.classList.add('wrong');
+          }
+          b.textContent = optText;
+          b.onclick = function () { answerQuiz(channelId, msg.id, idx); };
+          optWrap.appendChild(b);
+        });
+        box.appendChild(optWrap);
+
+        if (typeof emb.chosen === 'number') {
+          const fb = document.createElement('div');
+          fb.style.fontSize = '0.875rem';
+          fb.style.color = emb.chosen === emb.answer ? 'var(--tertiary)' : 'var(--warning)';
+          fb.textContent = (emb.chosen === emb.answer ? 'Tepat! ' : 'Belum tepat. ') + emb.explain;
+          box.appendChild(fb);
+        }
+      }
+
+      return box;
+    }
+
+    function applyThemeAndWallpaper() {
+      document.documentElement.setAttribute('data-theme', appState.theme || 'deep-ocean');
+      document.documentElement.style.setProperty('--wallpaper-opacity', String((appState.wallpaperOpacity || 0) / 100));
+      document.documentElement.style.setProperty('--wallpaper-blur', `${appState.wallpaperBlur || 0}px`);
+
+      ['deep-ocean', 'abyssal', 'coral-reef'].forEach(function (t) {
+        const card = document.getElementById(`theme-card-${t}`);
+        if (card) card.classList.toggle('active', appState.theme === t);
+      });
+
+      const wpLayer = document.getElementById('wallpaper-layer');
+      if (!wpLayer) return;
+
+      if (sessionWallpaperUrl) {
+        wpLayer.innerHTML = '';
+        wpLayer.style.backgroundImage = `url("${sessionWallpaperUrl}")`;
+        return;
+      }
+
+      wpLayer.style.backgroundImage = 'none';
+      const preset = appState.wallpaperPreset || 'caustics';
+      if (preset === 'none') {
+        wpLayer.innerHTML = '';
+      } else if (preset === 'abyss-waves') {
+        wpLayer.innerHTML = `<svg class="wallpaper-svg" viewBox="0 0 1200 800" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 460 Q 300 380 600 460 T 1200 460 L 1200 800 L 0 800 Z" fill="var(--primary)" opacity="0.22"/><path d="M0 560 Q 300 490 600 560 T 1200 560 L 1200 800 L 0 800 Z" fill="var(--tertiary)" opacity="0.18"/></svg>`;
+      } else if (preset === 'coral-grid') {
+        wpLayer.innerHTML = `<svg class="wallpaper-svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><circle cx="140" cy="140" r="110" fill="none" stroke="var(--primary)" stroke-width="1.5" opacity="0.35"/><circle cx="660" cy="440" r="160" fill="none" stroke="var(--tertiary)" stroke-width="1.5" opacity="0.3"/><path d="M40 520 Q 200 420 400 520 T 760 520" fill="none" stroke="var(--primary)" stroke-width="2" opacity="0.35"/></svg>`;
+      } else {
+        wpLayer.innerHTML = `<svg class="wallpaper-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><radialGradient id="oceanGlow" cx="50%" cy="15%" r="75%"><stop offset="0%" stop-color="var(--primary)" stop-opacity="0.45"/><stop offset="100%" stop-color="var(--background)" stop-opacity="0"/></radialGradient><rect width="1200" height="800" fill="url(#oceanGlow)"/><path d="M0 240 C 260 180, 520 300, 820 220 C 980 180, 1100 220, 1200 250" fill="none" stroke="var(--primary)" stroke-width="1.5" opacity="0.35"/><path d="M0 380 C 320 320, 620 440, 940 360 C 1080 325, 1150 360, 1200 380" fill="none" stroke="var(--tertiary)" stroke-width="1.2" opacity="0.28"/></svg>`;
+      }
+    }
+
+    function renderAll() {
+      applyThemeAndWallpaper();
+      renderServerRail();
+      renderChannelSidebar();
+      renderProfileUI();
+      renderChatHeaderAndFeed();
+      syncSettingsInputs();
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+    }
+
+    function syncSettingsInputs() {
+      const p = appState.profile;
+      const setVal = function (id, val) {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      };
+      setVal('input-username', p.name);
+      setVal('input-role', p.role);
+      setVal('input-status', p.status);
+      setVal('input-custom-status', p.customStatus);
+      setVal('select-wallpaper-preset', appState.wallpaperPreset);
+      setVal('slider-wp-opacity', appState.wallpaperOpacity);
+      setVal('slider-wp-blur', appState.wallpaperBlur);
+      setVal('slider-sfx-volume', appState.sfxVolume);
+
+      const sfxCheck = document.getElementById('toggle-sfx-check');
+      if (sfxCheck) sfxCheck.checked = appState.sfxEnabled;
+
+      const opLabel = document.getElementById('val-wp-opacity');
+      if (opLabel) opLabel.textContent = `${appState.wallpaperOpacity}%`;
+      const blurLabel = document.getElementById('val-wp-blur');
+      if (blurLabel) blurLabel.textContent = `${appState.wallpaperBlur}px`;
+      const volLabel = document.getElementById('val-sfx-volume');
+      if (volLabel) volLabel.textContent = `${appState.sfxVolume}%`;
+
+      const avRow = document.getElementById('avatar-picker-row');
+      if (avRow) {
+        avRow.innerHTML = '';
+        AVATAR_CHOICES.forEach(function (em) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'cmd-chip';
+          if (p.avatar === em) {
+            btn.style.borderColor = 'var(--primary)';
+            btn.style.backgroundColor = 'var(--primary-container)';
+          }
+          btn.textContent = em;
+          btn.onclick = function () { updateProfileField('avatar', em); };
+          avRow.appendChild(btn);
+        });
+      }
+
+      const emGrid = document.getElementById('composer-emoji-grid');
+      if (emGrid && emGrid.children.length === 0) {
+        EMOJI_CHOICES.forEach(function (em) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'emoji-btn';
+          b.textContent = em;
+          b.onclick = function () { insertEmojiToComposer(em); };
+          emGrid.appendChild(b);
+        });
+      }
+
+      const shell = document.getElementById('app-shell');
+      if (shell) {
+        shell.classList.toggle('members-collapsed', !appState.membersOpen);
+      }
+      const memBtn = document.getElementById('btn-members-toggle');
+      if (memBtn) {
+        memBtn.className = 'icon-btn' + (appState.membersOpen ? ' active' : '');
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function formatNowTime() {
+      const d = new Date();
+      return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    /* Navigation & Interactive Handlers */
+    function selectHomeServer() {
+      selectServer(appState.servers[0].id);
+    }
+
+    function selectServer(serverId) {
+      const srv = appState.servers.find(function (s) { return s.id === serverId; });
+      if (!srv) return;
+      appState.activeServerId = srv.id;
+      appState.activeChannelId = srv.textChannels[0].id;
+      playBubbleSound('react');
+      saveAppState();
+      renderAll();
+    }
+
+    function selectTextChannel(channelId) {
+      appState.activeChannelId = channelId;
+      const shell = document.getElementById('app-shell');
+      if (shell) shell.classList.remove('mobile-nav-open');
+      playBubbleSound('react');
+      saveAppState();
+      renderAll();
+    }
+
+    function toggleVoiceChannel(voiceId, voiceName) {
+      if (appState.connectedVoiceId === voiceId) {
+        openCallModal();
+        return;
+      }
+      appState.connectedVoiceId = voiceId;
+      playBubbleSound('voice');
+      showToast(`Terhubung ke ${voiceName}`);
+      saveAppState();
+      renderAll();
+    }
+
+    function leaveVoiceChannel() {
+      appState.connectedVoiceId = null;
+      stopCameraStream();
+      playBubbleSound('mute');
+      showToast('Koneksi suara diputus');
+      saveAppState();
+      renderAll();
+    }
+
+    function toggleMic() {
+      appState.micMuted = !appState.micMuted;
+      playBubbleSound('mute');
+      saveAppState();
+      renderProfileUI();
+      renderChannelSidebar();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function toggleDeafen() {
+      appState.deafened = !appState.deafened;
+      if (appState.deafened) appState.micMuted = true;
+      playBubbleSound('mute');
+      saveAppState();
+      renderProfileUI();
+      renderChannelSidebar();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function toggleSfxQuick() {
+      appState.sfxEnabled = !appState.sfxEnabled;
+      if (appState.sfxEnabled) playBubbleSound('react');
+      showToast(appState.sfxEnabled ? 'Suara gelembung diaktifkan' : 'Suara gelembung dimatikan');
+      saveAppState();
+      renderProfileUI();
+      syncSettingsInputs();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function toggleMembersPanel() {
+      const isNarrow = window.innerWidth <= 960;
+      const shell = document.getElementById('app-shell');
+      if (isNarrow && shell) {
+        shell.classList.toggle('members-drawer-open');
+        return;
+      }
+      appState.membersOpen = !appState.membersOpen;
+      saveAppState();
+      syncSettingsInputs();
+    }
+
+    function toggleMobileNav() {
+      const shell = document.getElementById('app-shell');
+      if (shell) shell.classList.toggle('mobile-nav-open');
+    }
+
+    /* Messaging & FishBot */
+    function handleComposerInput(val) {
+      const pop = document.getElementById('slash-popover');
+      if (!pop) return;
+      if (val.startsWith('/')) {
+        const q = val.toLowerCase();
+        const matches = SLASH_COMMANDS.filter(function (c) { return c.cmd.startsWith(q); });
+        if (matches.length > 0) {
+          pop.innerHTML = '';
+          matches.forEach(function (c) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'slash-item';
+            btn.innerHTML = `<strong style="color:var(--primary);font-family:var(--font-label);">${c.cmd}</strong><span style="font-size:0.8125rem;color:var(--on-surface-variant);">${c.desc}</span>`;
+            btn.onclick = function () {
+              const inp = document.getElementById('chat-input');
+              if (inp) inp.value = c.cmd;
+              pop.classList.remove('open');
+              sendMessageFromInput();
+            };
+            pop.appendChild(btn);
+          });
+          pop.classList.add('open');
+          return;
+        }
+      }
+      pop.classList.remove('open');
+    }
+
+    function handleComposerKeydown(ev) {
+      if (ev.key === 'Enter' && !ev.shiftKey) {
+        ev.preventDefault();
+        sendMessageFromInput();
+      }
+    }
+
+    function sendMessageFromInput() {
+      const inp = document.getElementById('chat-input');
+      if (!inp) return;
+      const raw = inp.value.trim();
+      if (!raw) return;
+      inp.value = '';
+      const pop = document.getElementById('slash-popover');
+      if (pop) pop.classList.remove('open');
+      const emPop = document.getElementById('emoji-popover');
+      if (emPop) emPop.classList.remove('open');
+
+      if (raw.startsWith('/')) {
+        runBotCommand(raw);
+        return;
+      }
+
+      pushMessage(appState.activeChannelId, {
+        id: 'msg-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+        isBot: false,
+        author: appState.profile.name,
+        avatar: appState.profile.avatar,
+        role: appState.profile.role,
+        time: formatNowTime(),
+        text: raw,
+        reactions: {}
+      });
+      playBubbleSound('send');
+      saveAppState();
+      renderChatHeaderAndFeed();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function runBotCommand(cmdInput) {
+      const ch = getActiveChannel();
+      if (!ch) return;
+      const cmd = cmdInput.trim().split(/\s+/)[0].toLowerCase();
+
+      pushMessage(ch.id, {
+        id: 'msg-' + Date.now() + '-u',
+        isBot: false,
+        author: appState.profile.name,
+        avatar: appState.profile.avatar,
+        role: appState.profile.role,
+        time: formatNowTime(),
+        text: cmdInput.trim(),
+        reactions: {}
+      });
+      playBubbleSound('send');
+
+      let botReply = null;
+      if (cmd === '/ikan') {
+        const sp = FISHBOT_SPECIES[Math.floor(Math.random() * FISHBOT_SPECIES.length)];
+        botReply = {
+          text: `Berikut catatan spesies laut dari arsip FishBot:`,
+          embed: {
+            title: sp.name,
+            desc: sp.fact,
+            stats: [
+              { label: 'Habitat', value: sp.habitat },
+              { label: 'Status Konservasi', value: sp.status }
+            ]
+          }
+        };
+      } else if (cmd === '/kuis-laut') {
+        const q = QUIZ_BANK[Math.floor(Math.random() * QUIZ_BANK.length)];
+        botReply = {
+          text: `Uji wawasan samudra Anda — pilih satu jawaban:`,
+          embed: {
+            kind: 'quiz',
+            title: q.q,
+            options: q.options,
+            answer: q.answer,
+            explain: q.explain,
+            chosen: null
+          }
+        };
+      } else if (cmd === '/pancing') {
+        const catchItem = FISHING_CATCHES[Math.floor(Math.random() * FISHING_CATCHES.length)];
+        appState.fishScore = (appState.fishScore || 0) + catchItem.pts;
+        botReply = {
+          text: `Kail Anda bergetar di kolam!`,
+          embed: {
+            title: `Tangkapan: ${catchItem.item}`,
+            desc: `Semua hasil tangkapan dilepas kembali secara lestari ke terumbu.`,
+            stats: [
+              { label: 'Kelangkaan', value: catchItem.rarity },
+              { label: 'Poin Sesi', value: `+${catchItem.pts} (Total: ${appState.fishScore})` }
+            ]
+          }
+        };
+      } else if (cmd === '/bantuan') {
+        botReply = {
+          text: `Perintah FishBot yang tersedia di klien web Fishcord:`,
+          embed: {
+            title: `Panduan Cepat FishBot`,
+            desc: `Gunakan perintah garis miring di kolom obrolan atau klik tombol di kartu sambutan.`,
+            stats: [
+              { label: '/ikan', value: 'Fakta spesies laut' },
+              { label: '/kuis-laut', value: 'Kuis oseanografi' },
+              { label: '/pancing', value: 'Mini-game pancing lestari' },
+              { label: 'Suara', value: 'Klik Suara Dalam Air' }
+            ]
+          }
+        };
+      } else {
+        botReply = {
+          text: `Perintah "${cmd}" tidak dikenali. Ketik /bantuan untuk melihat daftar perintah.`
+        };
+      }
+
+      setTimeout(function () {
+        pushMessage(ch.id, {
+          id: 'msg-' + Date.now() + '-b',
+          isBot: true,
+          time: formatNowTime(),
+          text: botReply.text,
+          embed: botReply.embed || null,
+          reactions: {}
+        });
+        playBubbleSound('bot');
+        saveAppState();
+        renderChatHeaderAndFeed();
+        if (window.lucide) window.lucide.createIcons();
+      }, 180);
+
+      saveAppState();
+      renderChatHeaderAndFeed();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function pushMessage(channelId, msg) {
+      if (!appState.messagesByChannel[channelId]) {
+        appState.messagesByChannel[channelId] = [];
+      }
+      appState.messagesByChannel[channelId].push(msg);
+      if (appState.messagesByChannel[channelId].length > 80) {
+        appState.messagesByChannel[channelId].shift();
+      }
+    }
+
+    function answerQuiz(channelId, msgId, chosenIdx) {
+      const list = appState.messagesByChannel[channelId] || [];
+      const target = list.find(function (m) { return m.id === msgId; });
+      if (!target || !target.embed || typeof target.embed.chosen === 'number') return;
+      target.embed.chosen = chosenIdx;
+      playBubbleSound(chosenIdx === target.embed.answer ? 'bot' : 'mute');
+      saveAppState();
+      renderChatHeaderAndFeed();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function toggleReaction(channelId, msgId, emoji) {
+      const list = appState.messagesByChannel[channelId] || [];
+      const target = list.find(function (m) { return m.id === msgId; });
+      if (!target) return;
+      if (!target.reactions) target.reactions = {};
+      target.reactions[emoji] = target.reactions[emoji] ? 0 : 1;
+      playBubbleSound('react');
+      saveAppState();
+      renderChatHeaderAndFeed();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function deleteMessage(channelId, msgId) {
+      const list = appState.messagesByChannel[channelId] || [];
+      appState.messagesByChannel[channelId] = list.filter(function (m) { return m.id !== msgId; });
+      saveAppState();
+      renderChatHeaderAndFeed();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function clearCurrentChannel(btn) {
+      if (btn.dataset.armed !== 'true') {
+        btn.dataset.armed = 'true';
+        const span = btn.querySelector('span');
+        if (span) span.textContent = 'Konfirmasi?';
+        setTimeout(function () {
+          btn.dataset.armed = 'false';
+          if (span) span.textContent = 'Bersihkan';
+        }, 3000);
+        return;
+      }
+      btn.dataset.armed = 'false';
+      const span = btn.querySelector('span');
+      if (span) span.textContent = 'Bersihkan';
+      appState.messagesByChannel[appState.activeChannelId] = [];
+      playBubbleSound('mute');
+      saveAppState();
+      renderChatHeaderAndFeed();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function handleSearchInput(val) {
+      searchQuery = val || '';
+      renderChatHeaderAndFeed();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function toggleEmojiPopover() {
+      const pop = document.getElementById('emoji-popover');
+      if (pop) pop.classList.toggle('open');
+    }
+
+    function insertEmojiToComposer(em) {
+      const inp = document.getElementById('chat-input');
+      if (!inp) return;
+      inp.value += em;
+      inp.focus();
+      const pop = document.getElementById('emoji-popover');
+      if (pop) pop.classList.remove('open');
+    }
+
+    /* Settings & Modals */
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('open');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('open');
+      if (id === 'call-modal') {
+        stopCameraStream();
+      }
+    }
+
+    function openSettingsModal(tab) {
+      switchSettingsTab(tab || 'profile');
+      openModal('settings-modal');
+    }
+
+    function switchSettingsTab(tab) {
+      ['profile', 'appearance', 'audio'].forEach(function (t) {
+        const panel = document.getElementById(`settings-tab-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (panel) panel.style.display = t === tab ? 'flex' : 'none';
+        if (btn) btn.classList.toggle('active', t === tab);
+      });
+    }
+
+    function updateProfileField(field, val) {
+      appState.profile[field] = val;
+      if (field === 'avatar') playBubbleSound('react');
+      saveAppState();
+      renderProfileUI();
+      renderChannelSidebar();
+      syncSettingsInputs();
+    }
+
+    function setTheme(themeName) {
+      appState.theme = themeName;
+      playBubbleSound('react');
+      saveAppState();
+      applyThemeAndWallpaper();
+    }
+
+    function setWallpaperPreset(preset) {
+      sessionWallpaperUrl = '';
+      appState.wallpaperPreset = preset;
+      playBubbleSound('react');
+      saveAppState();
+      applyThemeAndWallpaper();
+    }
+
+    function handleWallpaperUpload(input) {
+      const file = input && input.files && input.files[0];
+      if (!file) return;
+      if (sessionWallpaperUrl) URL.revokeObjectURL(sessionWallpaperUrl);
+      sessionWallpaperUrl = URL.createObjectURL(file);
+      applyThemeAndWallpaper();
+      showToast('Wallpaper lokal diterapkan untuk sesi ini');
+    }
+
+    function resetCustomWallpaper() {
+      if (sessionWallpaperUrl) {
+        URL.revokeObjectURL(sessionWallpaperUrl);
+        sessionWallpaperUrl = '';
+      }
+      const fileInp = document.getElementById('input-wallpaper-file');
+      if (fileInp) fileInp.value = '';
+      applyThemeAndWallpaper();
+      showToast('Kembali ke latar bawaan');
+    }
+
+    function updateWallpaperOpacity(val) {
+      appState.wallpaperOpacity = Number(val);
+      const lbl = document.getElementById('val-wp-opacity');
+      if (lbl) lbl.textContent = `${val}%`;
+      saveAppState();
+      applyThemeAndWallpaper();
+    }
+
+    function updateWallpaperBlur(val) {
+      appState.wallpaperBlur = Number(val);
+      const lbl = document.getElementById('val-wp-blur');
+      if (lbl) lbl.textContent = `${val}px`;
+      saveAppState();
+      applyThemeAndWallpaper();
+    }
+
+    function setSfxEnabled(checked) {
+      appState.sfxEnabled = Boolean(checked);
+      saveAppState();
+      renderProfileUI();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function updateSfxVolume(val) {
+      appState.sfxVolume = Number(val);
+      const lbl = document.getElementById('val-sfx-volume');
+      if (lbl) lbl.textContent = `${val}%`;
+      saveAppState();
+    }
+
+    /* Call Grid Modal */
+    function openCallModal() {
+      const found = appState.connectedVoiceId ? findVoiceChannelById(appState.connectedVoiceId) : null;
+      const lbl = document.getElementById('call-room-label');
+      if (lbl) lbl.textContent = found ? found.name : 'Suara Dalam Air';
+      const notice = document.getElementById('call-notice');
+      if (notice) notice.classList.remove('visible');
+      renderProfileUI();
+      openModal('call-modal');
+    }
+
+    function joinOrToggleVoiceFromCall() {
+      const srv = getActiveServer();
+      const firstVc = srv && srv.voiceChannels[0];
+      if (!firstVc) return;
+      if (appState.connectedVoiceId) {
+        leaveVoiceChannel();
+      } else {
+        toggleVoiceChannel(firstVc.id, firstVc.name);
+      }
+      renderProfileUI();
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    async function toggleCameraPreview() {
+      const video = document.getElementById('local-video-preview');
+      const notice = document.getElementById('call-notice');
+      if (localCameraStream) {
+        stopCameraStream();
+        return;
+      }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        if (notice) {
+          notice.className = 'inline-notice warn visible';
+          notice.textContent = 'Pratinjau kamera tidak didukung di pratinjau sandbox ini. Jalankan file index.html hasil ekspor langsung di Chrome/Chromebook untuk akses kamera penuh.';
+        }
+        return;
+      }
+      try {
+        localCameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        if (video) {
+          video.srcObject = localCameraStream;
+          video.classList.add('active');
+        }
+        if (notice) {
+          notice.className = 'inline-notice visible';
+          notice.textContent = 'Kamera lokal aktif.';
+        }
+      } catch (e) {
+        if (notice) {
+          notice.className = 'inline-notice warn visible';
+          notice.textContent = 'Izin kamera dibatasi oleh lingkungan peramban. Pengujian visual avatar tetap berjalan normal.';
+        }
+      }
+    }
+
+    function stopCameraStream() {
+      if (localCameraStream) {
+        localCameraStream.getTracks().forEach(function (t) { t.stop(); });
+        localCameraStream = null;
+      }
+      const video = document.getElementById('local-video-preview');
+      if (video) {
+        video.srcObject = null;
+        video.classList.remove('active');
+      }
+    }
+
+    /* Create Server & Channel */
+    function openCreateServerModal() {
+      const err = document.getElementById('create-server-error');
+      if (err) err.classList.remove('visible');
+      const inp = document.getElementById('new-server-name');
+      if (inp) inp.value = '';
+      openModal('create-server-modal');
+    }
+
+    function createNewServer() {
+      const inp = document.getElementById('new-server-name');
+      const ico = document.getElementById('new-server-icon');
+      const err = document.getElementById('create-server-error');
+      const name = inp ? inp.value.trim() : '';
+      if (name.length < 2) {
+        if (err) {
+          err.textContent = 'Nama kolam minimal 2 karakter.';
+          err.classList.add('visible');
+        }
+        return;
+      }
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString(36).slice(-3);
+      const newSrv = {
+        id: slug,
+        name: name,
+        icon: ico ? ico.value : 'fish',
+        textChannels: [
+          { id: `${slug}-umum`, name: 'kolam-obrolan', topic: `Saluran utama untuk ${name}` }
+        ],
+        voiceChannels: [
+          { id: `${slug}-suara`, name: 'Suara Dalam Air' }
+        ]
+      };
+      appState.servers.push(newSrv);
+      appState.activeServerId = newSrv.id;
+      appState.activeChannelId = newSrv.textChannels[0].id;
+      playBubbleSound('bot');
+      closeModal('create-server-modal');
+      saveAppState();
+      renderAll();
+    }
+
+    function addQuickTextChannel(serverId) {
+      const srv = appState.servers.find(function (s) { return s.id === serverId; });
+      if (!srv) return;
+      const idx = srv.textChannels.length + 1;
+      const newId = `${serverId}-saluran-${idx}-${Date.now().toString(36).slice(-3)}`;
+      srv.textChannels.push({
+        id: newId,
+        name: `saluran-${idx}`,
+        topic: `Saluran teks baru di ${srv.name}`
+      });
+      appState.activeChannelId = newId;
+      playBubbleSound('react');
+      saveAppState();
+      renderAll();
+    }
+
+    /* Export GitHub Clean Template */
+    function buildCleanExportHtml() {
+      const clone = document.documentElement.cloneNode(true);
+      clone.setAttribute('data-theme', 'deep-ocean');
+
+      const clearIds = ['server-list', 'channel-list', 'chat-feed', 'slash-popover', 'avatar-picker-row', 'composer-emoji-grid'];
+      clearIds.forEach(function (id) {
+        const node = clone.querySelector('#' + id);
+        if (node) node.innerHTML = '';
+      });
+
+      const wp = clone.querySelector('#wallpaper-layer');
+      if (wp) {
+        wp.innerHTML = '';
+        wp.style.backgroundImage = 'none';
+      }
+
+      const expBox = clone.querySelector('#export-code-box');
+      if (expBox) expBox.textContent = '';
+
+      const modals = clone.querySelectorAll('.modal-backdrop');
+      modals.forEach(function (m) { m.classList.remove('open'); });
+
+      const svgs = clone.querySelectorAll('svg[data-lucide]');
+      svgs.forEach(function (svg) {
+        const iconName = svg.getAttribute('data-lucide');
+        const iTag = document.createElement('i');
+        iTag.setAttribute('data-lucide', iconName);
+        iTag.setAttribute('aria-hidden', 'true');
+        if (svg.getAttribute('style')) iTag.setAttribute('style', svg.getAttribute('style'));
+        if (svg.classList.contains('channel-icon')) iTag.className = 'channel-icon';
+        svg.replaceWith(iTag);
+      });
+
+      return '<!DOCTYPE html>\n' + clone.outerHTML;
+    }
+
+    function buildReadmeMd() {
+      return `# Fishcord — Klien Obrolan Web Bertema Samudra
+
+Template aplikasi web satu berkas (single-file HTML) terinspirasi Discord dengan tema bawah laut yang ringan untuk Chrome dan Chromebook.
+
+## Fitur Utama
+- **Bebas Data Palsu (Clean Template)**: Tidak ada akun dummy atau riwayat obrolan palsu di daftar anggota maupun feed.
+- **Tata Letak 4 Kolom Responsif**: Bilah kolam (server), daftar saluran teks & suara, jendela obrolan utama, dan panel anggota.
+- **3 Tema Samudra**: Deep Ocean, Abyssal, dan Coral Reef beserta latar SVG dan unggah wallpaper lokal.
+- **Audio Gelembung Web Audio API**: Efek suara air disintesis langsung di peramban tanpa berkas audio eksternal.
+- **Perintah Interaktif FishBot**: \`/ikan\`, \`/kuis-laut\`, \`/pancing\`, dan \`/bantuan\`.
+- **Modal Panggilan Suara & Video**: Siap dihubungkan ke WebRTC / PeerJS / LiveKit.
+
+## Menjalankan di Chromebook / GitHub Pages
+1. Simpan berkas ini sebagai \`index.html\` di repositori GitHub Anda.
+2. Buka langsung di Chrome atau aktifkan **GitHub Pages** pada cabang \`main\`.
+3. Hubungkan fungsi \`sendMessageFromInput()\` dan daftar anggota ke backend WebSocket, Supabase Realtime, atau Firebase pilihan Anda.`;
+    }
+
+    function openExportModal() {
+      switchExportTab('html');
+      const notice = document.getElementById('export-notice');
+      if (notice) notice.classList.remove('visible');
+      openModal('export-modal');
+    }
+
+    function switchExportTab(tab) {
+      activeExportTab = tab;
+      const box = document.getElementById('export-code-box');
+      const lbl = document.getElementById('export-code-label');
+      const dlLbl = document.getElementById('export-download-label');
+      const tHtml = document.getElementById('export-tab-html');
+      const tRead = document.getElementById('export-tab-readme');
+
+      if (tHtml) tHtml.classList.toggle('active', tab === 'html');
+      if (tRead) tRead.classList.toggle('active', tab === 'readme');
+
+      if (tab === 'readme') {
+        if (lbl) lbl.textContent = 'Pratinjau README.md untuk Repositori GitHub';
+        if (dlLbl) dlLbl.textContent = 'Unduh README.md';
+        if (box) box.value = buildReadmeMd();
+      } else {
+        if (lbl) lbl.textContent = 'Pratinjau Kode index.html Bersih';
+        if (dlLbl) dlLbl.textContent = 'Unduh index.html';
+        if (box) box.value = buildCleanExportHtml();
+      }
+    }
+
+    async function copyExportCode() {
+      const box = document.getElementById('export-code-box');
+      const notice = document.getElementById('export-notice');
+      if (!box) return;
+      try {
+        await navigator.clipboard.writeText(box.value);
+        if (notice) {
+          notice.className = 'inline-notice visible';
+          notice.textContent = 'Kode berhasil disalin ke papan klip.';
+        }
+      } catch (e) {
+        box.select();
+        document.execCommand('copy');
+        if (notice) {
+          notice.className = 'inline-notice visible';
+          notice.textContent = 'Kode dipilih dan disalin.';
+        }
+      }
+    }
+
+    function downloadExportFile() {
+      const box = document.getElementById('export-code-box');
+      const notice = document.getElementById('export-notice');
+      if (!box) return;
+      const filename = activeExportTab === 'readme' ? 'README.md' : 'index.html';
+      const content = box.value;
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === 'function') {
+        window.notebookAppApi.triggerFileDownload({
+          content: content,
+          contentType: 'text/plain',
+          encoding: 'UTF-8',
+          filename: filename
+        });
+      } else {
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      if (notice) {
+        notice.className = 'inline-notice visible';
+        notice.textContent = `Berkas ${filename} siap diunduh.`;
+      }
+    }
+
+    async function initApp() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === 'function') {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === 'object') {
+            appState = Object.assign({}, appState, saved);
+            if (!appState.servers || appState.servers.length === 0) {
+              appState.servers = JSON.parse(JSON.stringify(DEFAULT_SERVERS));
+            }
+          }
+        } catch (e) {
+          // Use clean defaults
+        }
+      }
+
+      renderAll();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === 'function') {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
